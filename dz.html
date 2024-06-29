@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Киносайт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        #search {
+            padding: 10px;
+            width: 200px;
+        }
+        #search-button {
+            padding: 10px;
+        }
+        #movies {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .movie {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 10px;
+            overflow: hidden;
+            width: 200px;
+        }
+        .movie img {
+            width: 100%;
+        }
+        .movie-info {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Киносайт</h1>
+    <input type="text" id="search" placeholder="Поиск фильмов...">
+    <button id="search-button">Поиск</button>
+</header>
+<main id="movies">
+
+</main>
+<script>
+    document.getElementById('search-button').addEventListener('click', function() {
+        const query = document.getElementById('search').value;
+        fetchMovies(query);
+    });
+
+    function fetchMovies(query) {
+        const apiKey = 'ВАШ_API_KEY';
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                displayMovies(data.results);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+    }
+
+    function displayMovies(movies) {
+        const moviesContainer = document.getElementById('movies');
+        moviesContainer.innerHTML = '';
+        movies.forEach(movie => {
+            const movieElement = document.createElement('div');
+            movieElement.classList.add('movie');
+
+            const moviePoster = document.createElement('img');
+            moviePoster.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+            movieElement.appendChild(moviePoster);
+
+            const movieInfo = document.createElement('div');
+            movieInfo.classList.add('movie-info');
+            movieInfo.innerHTML = `<h3>${movie.title}</h3><p>${movie.release_date}</p>`;
+            movieElement.appendChild(movieInfo);
+
+            moviesContainer.appendChild(movieElement);
+        });
+    }
+</script>
+</body>
+</html>
